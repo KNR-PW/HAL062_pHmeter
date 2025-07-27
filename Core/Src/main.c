@@ -27,6 +27,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
+#include "pHmeter.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -119,7 +120,8 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  printf("%d\n",pHarray[0]);
+	  float pHValue = convertpH(averageArray((uint16_t*)pHarray, ARRAY_LEN));
+	  printf("pH (%.1f )\n", pHValue);
 	  HAL_Delay(1000);
 
     /* USER CODE END WHILE */
