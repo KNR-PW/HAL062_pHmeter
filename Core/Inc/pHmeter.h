@@ -12,7 +12,7 @@
 
 #define ARRAY_LEN 40
 
-#define OFFSET 0
+#define OFFSET 0.1
 
 float averageArray(uint16_t* arr, uint8_t len);
 float convertpH(float avg);
