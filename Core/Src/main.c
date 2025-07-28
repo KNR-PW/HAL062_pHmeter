@@ -49,6 +49,7 @@
 
 /* USER CODE BEGIN PV */
 volatile static uint16_t pHarray[40];
+float pHValue;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -112,7 +113,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
   HAL_TIM_Base_Start(&htim3);
   HAL_ADCEx_Calibration_Start(&hadc1);
-  HAL_ADC_Start_DMA(&hadc1, (uint32_t*)pHarray, 40);
+  HAL_ADC_Start_DMA(&hadc1, (uint32_t*)pHarray, ARRAY_LEN);
 
   /* USER CODE END 2 */
 
@@ -120,9 +121,9 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  float pHValue = convertpH(averageArray((uint16_t*)pHarray, ARRAY_LEN));
+	  pHValue = convertpH(averageArray((uint16_t*)pHarray, ARRAY_LEN));
 	  printf("pH (%.1f )\n", pHValue);
-	  HAL_Delay(1000);
+	  HAL_Delay(100);
 
     /* USER CODE END WHILE */
 
