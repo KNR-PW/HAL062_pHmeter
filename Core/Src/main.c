@@ -21,7 +21,6 @@
 #include "adc.h"
 #include "dma.h"
 #include "tim.h"
-#include "usart.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -48,7 +47,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-volatile static uint16_t pHarray[40];
+volatile uint16_t pHarray[40];
 float pHValue;
 /* USER CODE END PV */
 
@@ -60,21 +59,7 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-int __io_putchar(int ch)
 
-{
-
-  if (ch == '\n') {
-
-    __io_putchar('\r');
-
-  }
-
-  HAL_UART_Transmit(&huart2, (uint8_t*)&ch, 1, HAL_MAX_DELAY);
-
-  return 1;
-
-}
 /* USER CODE END 0 */
 
 /**
@@ -109,7 +94,6 @@ int main(void)
   MX_DMA_Init();
   MX_ADC1_Init();
   MX_TIM3_Init();
-  MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
   HAL_TIM_Base_Start(&htim3);
   HAL_ADCEx_Calibration_Start(&hadc1);
@@ -122,7 +106,7 @@ int main(void)
   while (1)
   {
 	  pHValue = convertpH(averageArray((uint16_t*)pHarray, ARRAY_LEN));
-	  printf("pH (%.1f )\n", pHValue);
+
 	  HAL_Delay(100);
 
     /* USER CODE END WHILE */
