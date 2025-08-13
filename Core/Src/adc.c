@@ -21,6 +21,8 @@
 #include "adc.h"
 
 /* USER CODE BEGIN 0 */
+#include "pHmeter.h"
+
 
 /* USER CODE END 0 */
 

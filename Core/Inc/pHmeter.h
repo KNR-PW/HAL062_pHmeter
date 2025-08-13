@@ -15,6 +15,6 @@
 #define OFFSET 0.1
 
 float averageArray(uint16_t* arr, uint8_t len);
-float convertpH(float avg);
+uint8_t convertpH(float avg);
 
 #endif /* INC_PHMETER_H_ */

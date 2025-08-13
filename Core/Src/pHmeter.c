@@ -20,10 +20,10 @@ float averageArray(uint16_t* arr, uint8_t len)
 	return avg;
 }
 
-float convertpH(float avg)
+uint8_t convertpH(float avg)
 {
 	float voltage = 3.3f * avg / 4096.0f;
 	//printf("(%.3f V)\n", voltage);
-	float pHValue = 5.25f * voltage + OFFSET;
+	uint8_t pHValue = 52.5f * voltage + OFFSET;
 	return pHValue;
 }
