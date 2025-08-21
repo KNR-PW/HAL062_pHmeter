@@ -19,6 +19,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "adc.h"
+#include "can.h"
 #include "dma.h"
 #include "tim.h"
 #include "gpio.h"
@@ -49,6 +50,12 @@
 /* USER CODE BEGIN PV */
 volatile uint16_t pHarray[40];
 float pHValue;
+uint8_t pHRounded;
+
+
+CAN_TxHeaderTypeDef   TxHeader;
+uint8_t               TxData[8];
+uint32_t              TxMailbox;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -70,7 +77,10 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-
+	TxHeader.IDE = CAN_ID_STD;
+	TxHeader.StdId = PH_METER_ID;
+	TxHeader.RTR = CAN_RTR_DATA;
+	TxHeader.DLC = 8;
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -94,6 +104,7 @@ int main(void)
   MX_DMA_Init();
   MX_ADC1_Init();
   MX_TIM3_Init();
+  MX_CAN_Init();
   /* USER CODE BEGIN 2 */
   HAL_TIM_Base_Start(&htim3);
   HAL_ADCEx_Calibration_Start(&hadc1);
@@ -105,9 +116,8 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  pHValue = convertpH(averageArray((uint16_t*)pHarray, ARRAY_LEN));
-
-	  HAL_Delay(100);
+	 //pHValue = convertpH(averageArray((uint16_t*)pHarray, ARRAY_LEN));
+	 // HAL_Delay(100);
 
     /* USER CODE END WHILE */
 
@@ -160,7 +170,22 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
+{
+  /* Prevent unused argument(s) compilation warning */
+  UNUSED(hadc);
 
+
+
+  TxData[0] = 1;
+  TxData[1] = prepareFrame((uint16_t*)pHarray, ARRAY_LEN);
+
+  if (HAL_CAN_AddTxMessage(&hcan, &TxHeader, TxData, &TxMailbox) != HAL_OK)
+  {
+     Error_Handler ();
+  }
+
+}
 /* USER CODE END 4 */
 
 /**
