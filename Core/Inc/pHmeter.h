@@ -11,10 +11,13 @@
 #include<stdint.h>
 
 #define ARRAY_LEN 40
+#define PH_METER_ID 0x7C
 
-#define OFFSET 0.3
+#define OFFSET 0.75
 
 float averageArray(uint16_t* arr, uint8_t len);
-uint8_t convertpH(float avg);
+float convertpH(float avg);
+uint8_t pHRound(float pH);
+uint8_t prepareFrame(uint16_t* arr, uint8_t len);
 
 #endif /* INC_PHMETER_H_ */

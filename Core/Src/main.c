@@ -50,6 +50,7 @@
 /* USER CODE BEGIN PV */
 volatile uint16_t pHarray[40];
 float pHValue;
+uint8_t pHRounded;
 
 
 CAN_TxHeaderTypeDef   TxHeader;
@@ -77,7 +78,7 @@ int main(void)
 
   /* USER CODE BEGIN 1 */
 	TxHeader.IDE = CAN_ID_STD;
-	TxHeader.StdId = 0x203;
+	TxHeader.StdId = PH_METER_ID;
 	TxHeader.RTR = CAN_RTR_DATA;
 	TxHeader.DLC = 8;
   /* USER CODE END 1 */
@@ -115,9 +116,8 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  pHValue = convertpH(averageArray((uint16_t*)pHarray, ARRAY_LEN));
-
-	  HAL_Delay(100);
+	 //pHValue = convertpH(averageArray((uint16_t*)pHarray, ARRAY_LEN));
+	 // HAL_Delay(100);
 
     /* USER CODE END WHILE */
 
@@ -174,8 +174,11 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
 {
   /* Prevent unused argument(s) compilation warning */
   UNUSED(hadc);
-  TxData[0]=1;
-  TxData[1]=convertpH(averageArray((uint16_t*)pHarray, ARRAY_LEN));
+
+
+
+  TxData[0] = 1;
+  TxData[1] = prepareFrame((uint16_t*)pHarray, ARRAY_LEN);
 
   if (HAL_CAN_AddTxMessage(&hcan, &TxHeader, TxData, &TxMailbox) != HAL_OK)
   {
