@@ -7,4 +7,4 @@ ENK_A pin is used as pH meter ADC input
 * ID = 124
 * data[0] - 1 - włączona transmisja / 0 - wyłączona transmisja
 * data[1] - wartość pH * 10
- test
+
