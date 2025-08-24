@@ -78,7 +78,7 @@ int main(void)
 
   /* USER CODE BEGIN 1 */
 	TxHeader.IDE = CAN_ID_STD;
-	TxHeader.StdId = PH_METER_ID;
+	TxHeader.StdId = PH_METER_TX_ID;
 	TxHeader.RTR = CAN_RTR_DATA;
 	TxHeader.DLC = 8;
   /* USER CODE END 1 */
@@ -175,10 +175,7 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
   /* Prevent unused argument(s) compilation warning */
   UNUSED(hadc);
 
-
-
-  TxData[0] = 1;
-  TxData[1] = prepareFrame((uint16_t*)pHarray, ARRAY_LEN);
+  TxData[0] = prepareFrame((uint16_t*)pHarray, ARRAY_LEN);
 
   if (HAL_CAN_AddTxMessage(&hcan, &TxHeader, TxData, &TxMailbox) != HAL_OK)
   {

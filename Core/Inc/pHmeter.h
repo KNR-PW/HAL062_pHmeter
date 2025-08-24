@@ -11,7 +11,8 @@
 #include<stdint.h>
 
 #define ARRAY_LEN 40
-#define PH_METER_ID 0x7C
+#define PH_METER_TX_ID 192
+#define PH_METER_RX_ID 193
 
 #define OFFSET 0.75
 

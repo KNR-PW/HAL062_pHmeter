@@ -63,9 +63,9 @@ void MX_CAN_Init(void)
   CAN_FilterTypeDef sFilterConfig;
 
     sFilterConfig.FilterBank = 0;
-    sFilterConfig.FilterMode = CAN_FILTERMODE_IDMASK;
+    sFilterConfig.FilterMode = CAN_FILTERMODE_IDLIST;
     sFilterConfig.FilterScale = CAN_FILTERSCALE_32BIT;
-    sFilterConfig.FilterIdHigh = 0x0000;
+    sFilterConfig.FilterIdHigh = PH_METER_RX_ID<<5;
     sFilterConfig.FilterIdLow = 0x0000;
     sFilterConfig.FilterMaskIdHigh = 0x0000;
     sFilterConfig.FilterMaskIdLow = 0x0000;
@@ -166,7 +166,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 	  {
 	    Error_Handler();
 	  }
-	  if(RxHeader.StdId == PH_METER_ID)
+	  if(RxHeader.StdId == PH_METER_RX_ID)
 	  {
 		  switch (RxData[0])
 		  {
@@ -175,6 +175,9 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 			  break;
 		  case 1:
 			  HAL_NVIC_EnableIRQ(DMA1_Channel1_IRQn);
+			  break;
+		  default:
+			  break;
 		  }
 	  }
 }
