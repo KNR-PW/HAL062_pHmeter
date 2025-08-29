@@ -14,7 +14,7 @@
 #define PH_METER_TX_ID 192
 #define PH_METER_RX_ID 193
 
-#define OFFSET 0.75
+#define OFFSET 1.1
 
 float averageArray(uint16_t* arr, uint8_t len);
 float convertpH(float avg);
