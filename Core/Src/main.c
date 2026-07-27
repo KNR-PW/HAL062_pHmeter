@@ -51,8 +51,7 @@
 volatile uint16_t pHarray[ADC_BUFFER_LEN];
 volatile uint8_t frameReady = 0;
 uint16_t* pProcessBuffer = NULL;
-float pHValue;
-uint8_t pHRounded;
+uint8_t pHValue;
 
 
 CAN_TxHeaderTypeDef   TxHeader;

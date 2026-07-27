@@ -15,11 +15,10 @@
 #define PH_METER_TX_ID 192
 #define PH_METER_RX_ID 193
 
-#define OFFSET 1.1
+#define OFFSET 11U
 
-float averageArray(uint16_t* arr, uint8_t len);
-float convertpH(float avg);
-uint8_t pHRound(float pH);
+uint32_t averageArray(uint16_t* arr, uint8_t len);
+uint8_t calculatepH(uint32_t avg);
 uint8_t prepareFrame(uint16_t* arr, uint8_t len);
 
 #endif /* INC_PHMETER_H_ */
