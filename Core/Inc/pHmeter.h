@@ -10,7 +10,8 @@
 
 #include<stdint.h>
 
-#define ARRAY_LEN 40
+#define SAMPLES_PER_FRAME 40
+#define ADC_BUFFER_LEN (SAMPLES_PER_FRAME * 2)
 #define PH_METER_TX_ID 192
 #define PH_METER_RX_ID 193
 

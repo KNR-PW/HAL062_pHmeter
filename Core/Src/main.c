@@ -48,7 +48,9 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-volatile uint16_t pHarray[40];
+volatile uint16_t pHarray[ADC_BUFFER_LEN];
+volatile uint8_t frameReady = 0;
+uint16_t* pProcessBuffer = NULL;
 float pHValue;
 uint8_t pHRounded;
 
@@ -108,7 +110,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
   HAL_TIM_Base_Start(&htim3);
   HAL_ADCEx_Calibration_Start(&hadc1);
-  HAL_ADC_Start_DMA(&hadc1, (uint32_t*)pHarray, ARRAY_LEN);
+  HAL_ADC_Start_DMA(&hadc1, (uint32_t*)pHarray, ADC_BUFFER_LEN);
 
   /* USER CODE END 2 */
 
@@ -118,6 +120,15 @@ int main(void)
   {
 	 //pHValue = convertpH(averageArray((uint16_t*)pHarray, ARRAY_LEN));
 	 // HAL_Delay(100);
+   if(frameReady && pProcessBuffer != NULL)
+   {
+    frameReady = 0;
+    TxData[0] = prepareFrame(pProcessBuffer, SAMPLES_PER_FRAME);
+    if(HAL_CAN_AddTxMessage(&hcan, &TxHeader, TxData, &TxMailbox) != HAL_OK)
+    {
+      Error_Handler();
+    }
+   }
 
     /* USER CODE END WHILE */
 
@@ -170,18 +181,22 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef* hadc)
+{
+  /* Prevent unused argument(s) compilation warning */
+  UNUSED(hadc);
+
+  pProcessBuffer = (uint16_t*)&pHarray[0];
+  frameReady = 1;
+}
+
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
 {
   /* Prevent unused argument(s) compilation warning */
   UNUSED(hadc);
 
-  TxData[0] = prepareFrame((uint16_t*)pHarray, ARRAY_LEN);
-
-  if (HAL_CAN_AddTxMessage(&hcan, &TxHeader, TxData, &TxMailbox) != HAL_OK)
-  {
-     Error_Handler ();
-  }
-
+  pProcessBuffer = (uint16_t*)&pHarray[SAMPLES_PER_FRAME];
+  frameReady = 1;
 }
 /* USER CODE END 4 */
 
