@@ -82,7 +82,7 @@ int main(void)
 	TxHeader.IDE = CAN_ID_STD;
 	TxHeader.StdId = PH_METER_TX_ID;
 	TxHeader.RTR = CAN_RTR_DATA;
-	TxHeader.DLC = 8;
+	TxHeader.DLC = 1;
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
