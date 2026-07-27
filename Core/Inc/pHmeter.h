@@ -17,8 +17,6 @@
 
 #define OFFSET 11U
 
-uint32_t averageArray(uint16_t* arr, uint8_t len);
-uint8_t calculatepH(uint32_t avg);
 uint8_t prepareFrame(uint16_t* arr, uint8_t len);
 
 #endif /* INC_PHMETER_H_ */
