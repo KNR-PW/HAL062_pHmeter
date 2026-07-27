@@ -24,6 +24,8 @@
 #include "pHmeter.h"
 CAN_RxHeaderTypeDef	RxHeader;
 uint8_t				RxData[8];
+extern ADC_HandleTypeDef hadc1;
+extern volatile uint16_t pHarray[];
 
 
 
@@ -171,10 +173,10 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 		  switch (RxData[0])
 		  {
 		  case 0:
-			  HAL_NVIC_DisableIRQ(DMA1_Channel1_IRQn);
+        HAL_ADC_Stop_DMA(&hadc1);
 			  break;
 		  case 1:
-			  HAL_NVIC_EnableIRQ(DMA1_Channel1_IRQn);
+        HAL_ADC_Start_DMA(&hadc1, (uint32_t*)pHarray, ADC_BUFFER_LEN);
 			  break;
 		  default:
 			  break;
