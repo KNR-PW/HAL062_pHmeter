@@ -19,9 +19,9 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "can.h"
-#include "pHmeter.h"
 
 /* USER CODE BEGIN 0 */
+#include "pHmeter.h"
 CAN_RxHeaderTypeDef	RxHeader;
 uint8_t				RxData[8];
 
@@ -182,3 +182,4 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 	  }
 }
 /* USER CODE END 1 */
+
