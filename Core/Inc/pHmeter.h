@@ -15,7 +15,7 @@
 #define PH_METER_TX_ID 192
 #define PH_METER_RX_ID 193
 
-#define OFFSET 11U
+#define OFFSET 8U
 
 uint8_t prepareFrame(uint16_t* arr, uint8_t len);
 

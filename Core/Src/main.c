@@ -20,6 +20,7 @@
 #include "main.h"
 #include "adc.h"
 #include "can.h"
+#include "cmsis_gcc.h"
 #include "dma.h"
 #include "tim.h"
 #include "gpio.h"
@@ -28,6 +29,7 @@
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
 #include "pHmeter.h"
+#include "MC34931.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -52,6 +54,7 @@ volatile uint16_t pHarray[ADC_BUFFER_LEN];
 volatile uint8_t frameReady = 0;
 uint16_t* pProcessBuffer = NULL;
 uint8_t pHValue;
+volatile uint16_t motorCurrent;
 
 
 CAN_TxHeaderTypeDef   TxHeader;
@@ -106,11 +109,16 @@ int main(void)
   MX_ADC1_Init();
   MX_TIM3_Init();
   MX_CAN_Init();
+  MX_ADC2_Init();
+  MX_TIM1_Init();
   /* USER CODE BEGIN 2 */
   HAL_TIM_Base_Start(&htim3);
   HAL_ADCEx_Calibration_Start(&hadc1);
   HAL_ADC_Start_DMA(&hadc1, (uint32_t*)pHarray, ADC_BUFFER_LEN);
-
+  HAL_ADC_Start_IT(&hadc2);
+  Motor_Init_Structs();
+  Motor_Init_Hardware(&Motor1);
+  Motor_SetSpeed(&Motor1, DIR_CW, 50); // Start motor at 50% speed in clockwise direction
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -182,20 +190,36 @@ void SystemClock_Config(void)
 /* USER CODE BEGIN 4 */
 void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef* hadc)
 {
-  /* Prevent unused argument(s) compilation warning */
-  UNUSED(hadc);
-
+  if(hadc->Instance == ADC1)
+  {
   pProcessBuffer = (uint16_t*)&pHarray[0];
   frameReady = 1;
+  }
+
 }
 
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
 {
-  /* Prevent unused argument(s) compilation warning */
-  UNUSED(hadc);
+  if(hadc->Instance == ADC1)
+  {
+    pProcessBuffer = (uint16_t*)&pHarray[SAMPLES_PER_FRAME];
+    frameReady = 1;
+  }
+  else if(hadc->Instance == ADC2)
+  {
+    motorCurrent = (uint16_t)HAL_ADC_GetValue(&hadc2);
+  }
+}
 
-  pProcessBuffer = (uint16_t*)&pHarray[SAMPLES_PER_FRAME];
-  frameReady = 1;
+void HAL_ADC_LevelOutOfWindowCallback(ADC_HandleTypeDef *hadc)
+{
+  if(hadc->Instance == ADC2)
+  {
+    // Handle overcurrent condition
+    Motor_SetSpeed(&Motor1, DIR_CW, 0); // Stop the motor
+    __NOP();
+    // Additional error handling can be added here
+  }
 }
 /* USER CODE END 4 */
 
